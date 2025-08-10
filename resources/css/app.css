@@ -1,0 +1,8 @@
+@import 'flatpickr/dist/flatpickr.min.css';
+@import 'jsvectormap/dist/jsvectormap.min.css';
+@import 'dropzone/dist/dropzone.css';
+@import 'template.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
