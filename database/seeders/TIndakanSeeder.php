@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\JenisKunjungan;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\Schema;
 
 class TIndakanSeeder extends Seeder
 {
@@ -13,8 +15,10 @@ class TIndakanSeeder extends Seeder
      */
     public function run(): void
     {
-        // Kosongkan tabel sebelum diisi
+        Schema::disableForeignKeyConstraints();
+        DB::table('kunjungan_tindakan')->truncate();
         DB::table('tindakans')->truncate();
+        DB::table('jenis_kunjungans')->truncate();
 
         $this->command->info('Memasukkan data awal untuk Tindakan...');
 
@@ -57,5 +61,10 @@ class TIndakanSeeder extends Seeder
         ]);
 
         $this->command->info('Data Tindakan berhasil dimasukkan.');
+
+        JenisKunjungan::create(['nama' => 'Pemeriksaan Umum']);
+        JenisKunjungan::create(['nama' => 'Konsultasi']);
+        JenisKunjungan::create(['nama' => 'Kontrol']);
+        JenisKunjungan::create(['nama' => 'Gawat Darurat']);
     }
 }

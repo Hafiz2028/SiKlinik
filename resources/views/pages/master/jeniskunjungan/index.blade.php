@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="p-4 mx-auto max-w-7xl md:p-6 2xl:p-10">
-        <div x-data="{ pageName: `Tindakan` }">
+        <div x-data="{ pageName: `Jenis Kunjungan` }">
             <x-partials.breadcrumb />
         </div>
         <div class="my-4">
@@ -9,11 +9,11 @@
         </div>
 
         <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6"
-            x-data="tindakanManager()">
+            x-data="jenisKunjunganManager()">
 
-            <x-partials.table-header title="Data Master Tindakan"
-                description="Gunakan filter dan pencarian untuk menelusuri data secara instan." :addRoute="route('tindakan.create')"
-                addLabel="Tambah Tindakan" />
+            <x-partials.table-header title="Data Master Jenis Kunjungan"
+                description="Gunakan filter dan pencarian untuk menelusuri data secara instan." :addRoute="route('jkunjungan.create')"
+                addLabel="Tambah Jenis Kunjungan" />
 
             <div class="flex flex-col gap-4 mb-4 sm:flex-row sm:items-center sm:justify-between">
                 <div class="border-b border-gray-200 dark:border-gray-700">
@@ -44,7 +44,7 @@
                     <label for="search" class="sr-only">Cari</label>
                     <input type="text" id="search" x-model.debounce.300ms="search"
                         class="w-full h-11 rounded-lg border-gray-300 dark:bg-gray-800 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500"
-                        placeholder="Cari nama tindakan...">
+                        placeholder="Cari nama jenis kunjungan...">
                 </div>
             </div>
 
@@ -52,18 +52,19 @@
                 <table class="min-w-full">
                     <thead>
                         <tr class="border-gray-100 border-y dark:border-gray-800">
-                            <th class="px-4 py-3 text-left cursor-pointer select-none" @click="sortBy('nama_tindakan')">
+                            <th class="px-4 py-3 text-left cursor-pointer select-none" @click="sortBy('nama')">
                                 <div class="flex items-center gap-1.5">
-                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Nama Tindakan
+                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Nama Jenis
+                                        Kunjungan
                                     </p>
                                     <div class="text-gray-400 dark:text-gray-500">
-                                        <svg x-show="sortColumn === 'nama_tindakan' && sortDirection === 'asc'"
+                                        <svg x-show="sortColumn === 'nama' && sortDirection === 'asc'"
                                             class="w-2.5 h-2.5" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                             viewBox="0 0 16 16">
                                             <path
                                                 d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
                                         </svg>
-                                        <svg x-show="sortColumn === 'nama_tindakan' && sortDirection === 'desc'"
+                                        <svg x-show="sortColumn === 'nama' && sortDirection === 'desc'"
                                             class="w-2.5 h-2.5" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                             viewBox="0 0 16 16">
                                             <path
@@ -71,28 +72,6 @@
                                         </svg>
                                     </div>
                                 </div>
-                            </th>
-                            <th class="px-4 py-3 text-left cursor-pointer select-none" @click="sortBy('harga')">
-                                <div class="flex items-center gap-1.5">
-                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Harga</p>
-                                    <div class="text-gray-400 dark:text-gray-500">
-                                        <svg x-show="sortColumn === 'harga' && sortDirection === 'asc'"
-                                            class="w-2.5 h-2.5" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                            viewBox="0 0 16 16">
-                                            <path
-                                                d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
-                                        </svg>
-                                        <svg x-show="sortColumn === 'harga' && sortDirection === 'desc'"
-                                            class="w-2.5 h-2.5" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                            viewBox="0 0 16 16">
-                                            <path
-                                                d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </th>
-                            <th class="px-4 py-3 text-left">
-                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Deskripsi</p>
                             </th>
                             <th class="px-4 py-3 text-center">
                                 <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Aksi</p>
@@ -100,28 +79,20 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                        <template x-for="tindakan in paginatedData" :key="tindakan.id">
-                            <tr :class="tindakan.deleted_at ? 'bg-gray-50 dark:bg-gray-800/20' : ''">
+                        <template x-for="jkunjungan in paginatedData" :key="jkunjungan.id">
+                            <tr :class="jkunjungan.deleted_at ? 'bg-gray-50 dark:bg-gray-800/20' : ''">
                                 <td class="px-4 py-3">
                                     <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90"
-                                        x-text="tindakan.nama_tindakan"></p>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <p class="text-gray-500 text-theme-sm dark:text-gray-400"
-                                        x-text="formatRupiah(tindakan.harga)"></p>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <p class="text-gray-500 text-theme-sm dark:text-gray-400"
-                                        x-text="tindakan.deskripsi"></p>
+                                        x-text="jkunjungan.nama"></p>
                                 </td>
                                 <td class="px-4 py-3">
                                     <div class="flex items-center justify-center space-x-2">
-                                        <template x-if="tindakan.deleted_at">
+                                        <template x-if="jkunjungan.deleted_at">
                                             <div class="flex items-center justify-center space-x-2">
                                                 <button type="button" @click="openModal($event, 'warning')"
-                                                    :data-title="'Pulihkan Tindakan'"
-                                                    :data-message="`Pulihkan tindakan '${tindakan.nama_tindakan}'?`"
-                                                    :data-action="`/master/tindakan/${tindakan.id}/restore`"
+                                                    :data-title="'Pulihkan Jenis Kunjungan'"
+                                                    :data-message="`Pulihkan jenis kunjungan '${jkunjungan.nama}'?`"
+                                                    :data-action="`/master/jkunjungan/${jkunjungan.id}/restore`"
                                                     data-confirm="Ya, Pulihkan" data-method="PUT"
                                                     class="p-2 text-green-500 transition-colors duration-200 rounded-lg hover:bg-green-100 dark:hover:bg-gray-700"
                                                     title="Pulihkan">
@@ -132,9 +103,9 @@
                                                     </svg>
                                                 </button>
                                                 <button type="button" @click="openModal($event, 'danger')"
-                                                    :data-title="'Hapus Permanen Tindakan'"
-                                                    :data-message="`ANDA YAKIN? Data '${tindakan.nama_tindakan}' akan dihapus permanen.`"
-                                                    :data-action="`/master/tindakan/${tindakan.id}/force-delete`"
+                                                    :data-title="'Hapus Permanen Jenis Kunjungan'"
+                                                    :data-message="`ANDA YAKIN? Data '${jkunjungan.nama}' akan dihapus permanen.`"
+                                                    :data-action="`/master/jkunjungan/${jkunjungan.id}/force-delete`"
                                                     data-confirm="Ya, Hapus Permanen"
                                                     class="p-2 text-red-700 transition-colors duration-200 rounded-lg hover:bg-red-200 dark:hover:bg-gray-700"
                                                     title="Hapus Permanen">
@@ -148,9 +119,9 @@
                                                 </button>
                                             </div>
                                         </template>
-                                        <template x-if="!tindakan.deleted_at">
+                                        <template x-if="!jkunjungan.deleted_at">
                                             <div class="flex items-center justify-center space-x-2">
-                                                <a :href="`/master/tindakan/${tindakan.id}/edit`"
+                                                <a :href="`/master/jkunjungan/${jkunjungan.id}/edit`"
                                                     class="p-2 text-blue-500 transition-colors duration-200 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700"
                                                     title="Edit">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor"
@@ -162,9 +133,9 @@
                                                     </svg>
                                                 </a>
                                                 <button type="button" @click="openModal($event, 'warning')"
-                                                    :data-title="'Arsipkan Tindakan'"
-                                                    :data-message="`Arsipkan tindakan '${tindakan.nama_tindakan}'?`"
-                                                    :data-action="`/master/tindakan/${tindakan.id}`"
+                                                    :data-title="'Arsipkan Jenis Kunjungan'"
+                                                    :data-message="`Arsipkan jenis kunjungan '${jkunjungan.nama}'?`"
+                                                    :data-action="`/master/jkunjungan/${jkunjungan.id}`"
                                                     data-confirm="Ya, Arsipkan"
                                                     class="p-2 text-red-500 transition-colors duration-200 rounded-lg hover:bg-red-100 dark:hover:bg-gray-700"
                                                     title="Arsipkan">
@@ -207,12 +178,12 @@
     </div>
 
     <script>
-        function tindakanManager() {
+        function jenisKunjunganManager() {
             return {
-                allTindakans: @json($tindakans),
+                allJenisKunjungans: @json($jkunjungans),
                 tab: 'aktif',
                 search: '',
-                sortColumn: 'nama_tindakan',
+                sortColumn: 'nama',
                 sortDirection: 'asc',
                 currentPage: 1,
                 itemsPerPage: 10,
@@ -221,11 +192,11 @@
                     this.$watch('tab', () => this.currentPage = 1);
                 },
                 get filteredData() {
-                    let data = [...this.allTindakans];
-                    data = data.filter(tindakan => {
-                        const statusMatch = (this.tab === 'aktif' && !tindakan.deleted_at) || (this.tab ===
-                            'diarsipkan' && tindakan.deleted_at);
-                        const searchMatch = tindakan.nama_tindakan.toLowerCase().includes(this.search
+                    let data = [...this.allJenisKunjungans];
+                    data = data.filter(jkunjungan => {
+                        const statusMatch = (this.tab === 'aktif' && !jkunjungan.deleted_at) || (this.tab ===
+                            'diarsipkan' && jkunjungan.deleted_at);
+                        const searchMatch = jkunjungan.nama.toLowerCase().includes(this.search
                             .toLowerCase());
                         return statusMatch && searchMatch;
                     });

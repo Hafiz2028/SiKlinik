@@ -129,7 +129,7 @@
                                                 <button type="button" @click="openModal($event, 'warning')"
                                                     :data-title="'Pulihkan Pegawai'"
                                                     :data-message="`Pulihkan pegawai '${pegawai.nama_lengkap}'?`"
-                                                    :data-action="`/pegawai/${pegawai.id}/restore`"
+                                                    :data-action="`/master/pegawai/${pegawai.id}/restore`"
                                                     data-confirm="Ya, Pulihkan" data-method="PUT"
                                                     class="p-2 text-green-500 transition-colors duration-200 rounded-lg hover:bg-green-100 dark:hover:bg-gray-700"
                                                     title="Pulihkan">
@@ -142,7 +142,7 @@
                                                 <button type="button" @click="openModal($event, 'danger')"
                                                     :data-title="'Hapus Permanen Pegawai'"
                                                     :data-message="`ANDA YAKIN? Data '${pegawai.nama_lengkap}' akan dihapus permanen.`"
-                                                    :data-action="`/pegawai/${pegawai.id}/force-delete`"
+                                                    :data-action="`/master/pegawai/${pegawai.id}/force-delete`"
                                                     data-confirm="Ya, Hapus Permanen"
                                                     class="p-2 text-red-700 transition-colors duration-200 rounded-lg hover:bg-red-200 dark:hover:bg-gray-700"
                                                     title="Hapus Permanen">
@@ -158,7 +158,7 @@
                                         </template>
                                         <template x-if="!pegawai.deleted_at">
                                             <div class="flex items-center justify-center space-x-2">
-                                                <a :href="`/pegawai/${pegawai.id}/edit`"
+                                                <a :href="`/master/pegawai/${pegawai.id}/edit`"
                                                     class="p-2 text-blue-500 transition-colors duration-200 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700"
                                                     title="Edit">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor"
@@ -172,7 +172,7 @@
                                                 <button type="button" @click="openModal($event, 'warning')"
                                                     :data-title="'Arsipkan Pegawai'"
                                                     :data-message="`Arsipkan pegawai '${pegawai.nama_lengkap}'?`"
-                                                    :data-action="`/pegawai/${pegawai.id}`"
+                                                    :data-action="`/master/pegawai/${pegawai.id}`"
                                                     data-confirm="Ya, Arsipkan"
                                                     class="p-2 text-red-500 transition-colors duration-200 rounded-lg hover:bg-red-100 dark:hover:bg-gray-700"
                                                     title="Arsipkan">

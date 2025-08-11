@@ -1,5 +1,5 @@
 <aside :class="sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full'"
-    class="sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 dark:border-gray-800 dark:bg-black lg:static lg:translate-x-0">
+    class="sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 dark:border-gray-800 dark:bg-black dark:text-slate-300 lg:static lg:translate-x-0">
     <!-- SIDEBAR HEADER -->
     <div :class="sidebarToggle ? 'justify-center' : 'justify-between'"
         class="flex items-center gap-2 pt-8 sidebar-header pb-7">
@@ -9,7 +9,7 @@
                 <img class="w-32 hidden dark:block" src={{ asset('images/logo.png') }} alt="Logo" />
             </span>
 
-            <img class="logo-icon" :class="sidebarToggle ? 'lg:block' : 'hidden'" src="./images/logo/logo-icon.svg"
+            <img class="logo-icon h-6 w-auto" :class="sidebarToggle ? 'lg:block' : 'hidden'" src="./images/logo.png"
                 alt="Logo" />
         </a>
     </div>
@@ -18,13 +18,11 @@
     <div class="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <!-- Sidebar Menu -->
         <nav x-data="{ selected: $persist('Dashboard') }">
-            <!-- Menu Group -->
             <div>
                 <h3 class="mb-4 text-xs uppercase leading-[20px] text-gray-400">
                     <span class="menu-group-title" :class="sidebarToggle ? 'lg:hidden' : ''">
                         MENU
                     </span>
-
                     <svg :class="sidebarToggle ? 'lg:block hidden' : 'hidden'"
                         class="mx-auto fill-current menu-group-icon" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -35,12 +33,26 @@
                 </h3>
 
                 <ul class="flex flex-col gap-4 mb-6">
-                    <!-- Menu Item Dashboard -->
                     @php
                         $isDashboardActive = request()->routeIs('dashboard');
-                        $masterDataRoutes = ['user.*', 'pegawai.*', 'obat.*', 'wilayah.*', 'tindakan.*'];
+                        $masterDataRoutes = [
+                            'user.*',
+                            'pegawai.*',
+                            'obat.*',
+                            'wilayah.*',
+                            'tindakan.*',
+                            'jenis-kunjungan.*',
+                            'pasien.*',
+                        ];
                         $isMasterDataActive = request()->routeIs($masterDataRoutes);
+                        // Variabel untuk mengecek route aktif di grup Transaksi
+                        $isPasienActive = request()->routeIs('pasien.*');
+                        $isKunjunganActive = request()->routeIs('kunjungan.*');
+                        $isTindakanTransaksiActive = request()->routeIs('tindakan-transaksi.*');
+                        $isTagihanActive = request()->routeIs('tagihan.*');
+                        $isLaporanActive = request()->routeIs('laporan.*');
                     @endphp
+
                     <li>
                         <a href="{{ route('dashboard') }}" class="menu-item group"
                             :class="{ 'menu-item-active': {{ $isDashboardActive ? 'true' : 'false' }} }">
@@ -61,91 +73,105 @@
                             </span>
                         </a>
                     </li>
-                    <!-- Menu Item Dashboard -->
+                    @if (auth()->user()->hasRole('admin'))
+                        <li>
+                            <a href="#"
+                                @click.prevent="selected = (selected === 'MasterData' ? '' : 'MasterData')"
+                                class="menu-item group"
+                                :class="{
+                                    'menu-item-active': selected === 'MasterData' ||
+                                        {{ $isMasterDataActive ? 'true' : 'false' }}
+                                }">
+                                <svg :class="(selected === 'MasterData' || {{ $isMasterDataActive ? 'true' : 'false' }}) ?
+                                'menu-item-icon-active' : 'menu-item-icon-inactive'"
+                                    width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M11.665 3.75618C11.8762 3.65061 12.1247 3.65061 12.3358 3.75618L18.7807 6.97853L12.3358 10.2009C12.1247 10.3064 11.8762 10.3064 11.665 10.2009L5.22014 6.97853L11.665 3.75618ZM4.29297 8.19199V16.0946C4.29297 16.3787 4.45347 16.6384 4.70757 16.7654L11.25 20.0365V11.6512C11.1631 11.6205 11.0777 11.5843 10.9942 11.5425L4.29297 8.19199ZM12.75 20.037L19.2933 16.7654C19.5474 16.6384 19.7079 16.3787 19.7079 16.0946V8.19199L13.0066 11.5425C12.9229 11.5844 12.8372 11.6207 12.75 11.6515V20.037ZM13.0066 2.41453C12.3732 2.09783 11.6277 2.09783 10.9942 2.41453L4.03676 5.89316C3.27449 6.27429 2.79297 7.05339 2.79297 7.90563V16.0946C2.79297 16.9468 3.27448 17.7259 4.03676 18.1071L10.9942 21.5857L11.3296 20.9149L10.9942 21.5857C11.6277 21.9024 12.3732 21.9024 13.0066 21.5857L19.9641 18.1071C20.7264 17.7259 21.2079 16.9468 21.2079 16.0946V7.90563C21.2079 7.05339 20.7264 6.27429 19.9641 5.89316L13.0066 2.41453Z"
+                                        fill="" />
+                                </svg>
+                                <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+                                    Master Data
+                                </span>
+                                <svg class="menu-item-arrow absolute right-2.5 top-1/2 -translate-y-1/2 stroke-current"
+                                    :class="[(selected === 'MasterData' || {{ $isMasterDataActive ? 'true' : 'false' }}) ?
+                                        'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ?
+                                        'lg:hidden' :
+                                        ''
+                                    ]"
+                                    width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585" stroke=""
+                                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </a>
 
-                    <!-- Menu Item Ui Elements -->
-                    <li>
-
-                        <a href="#" @click.prevent="selected = (selected === 'MasterData' ? '' : 'MasterData')"
-                            class="menu-item group"
-                            :class="{ 'menu-item-active': selected === 'MasterData' ||
-                                    {{ $isMasterDataActive ? 'true' : 'false' }} }">
-                            <svg :class="(selected === 'MasterData') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
-                                width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M11.665 3.75618C11.8762 3.65061 12.1247 3.65061 12.3358 3.75618L18.7807 6.97853L12.3358 10.2009C12.1247 10.3064 11.8762 10.3064 11.665 10.2009L5.22014 6.97853L11.665 3.75618ZM4.29297 8.19199V16.0946C4.29297 16.3787 4.45347 16.6384 4.70757 16.7654L11.25 20.0365V11.6512C11.1631 11.6205 11.0777 11.5843 10.9942 11.5425L4.29297 8.19199ZM12.75 20.037L19.2933 16.7654C19.5474 16.6384 19.7079 16.3787 19.7079 16.0946V8.19199L13.0066 11.5425C12.9229 11.5844 12.8372 11.6207 12.75 11.6515V20.037ZM13.0066 2.41453C12.3732 2.09783 11.6277 2.09783 10.9942 2.41453L4.03676 5.89316C3.27449 6.27429 2.79297 7.05339 2.79297 7.90563V16.0946C2.79297 16.9468 3.27448 17.7259 4.03676 18.1071L10.9942 21.5857L11.3296 20.9149L10.9942 21.5857C11.6277 21.9024 12.3732 21.9024 13.0066 21.5857L19.9641 18.1071C20.7264 17.7259 21.2079 16.9468 21.2079 16.0946V7.90563C21.2079 7.05339 20.7264 6.27429 19.9641 5.89316L13.0066 2.41453Z"
-                                    fill="" />
-                            </svg>
-
-                            <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
-                                Master Data
-                            </span>
-
-                            <svg class="menu-item-arrow absolute right-2.5 top-1/2 -translate-y-1/2 stroke-current"
-                                :class="[(selected === 'MasterData') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive',
-                                    sidebarToggle ? 'lg:hidden' : ''
-                                ]"
-                                width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585" stroke=""
-                                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </a>
-
-                        <!-- Dropdown Menu Start -->
-                        <div class="overflow-hidden transform translate"
-                            :class="(selected === 'MasterData') ? 'block' : 'hidden'">
-                            <ul :class="sidebarToggle ? 'lg:hidden' : 'flex'"
-                                class="flex flex-col gap-1 mt-2 menu-dropdown pl-9">
-                                <li>
-                                    <a href="{{ route('user.index') }}" class="menu-dropdown-item group"
-                                        :class="{ 'menu-dropdown-item-active': {{ request()->routeIs('user.*') ? 'true' : 'false' }} }">
-                                        User
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('pegawai.index') }}" class="menu-dropdown-item group"
-                                        :class="{ 'menu-dropdown-item-active': {{ request()->routeIs('pegawai.*') ? 'true' : 'false' }} }">
-                                        Pegawai
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('obat.index') }}" class="menu-dropdown-item group"
-                                        :class="{ 'menu-dropdown-item-active': {{ request()->routeIs('obat.*') ? 'true' : 'false' }} }">
-                                        Obat
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('wilayah.index') }}" class="menu-dropdown-item group"
-                                        :class="{ 'menu-dropdown-item-active': {{ request()->routeIs('wilayah.*') ? 'true' : 'false' }} }">
-                                        Wilayah
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('tindakan.index') }}" class="menu-dropdown-item group"
-                                        :class="{ 'menu-dropdown-item-active': {{ request()->routeIs('tindakan.*') ? 'true' : 'false' }} }">
-                                        Tindakan
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- Dropdown Menu End -->
-                    </li>
-                    <!-- Menu Item Ui Elements -->
-
-
-
+                            <div class="overflow-hidden transform translate"
+                                :class="(selected === 'MasterData' || {{ $isMasterDataActive ? 'true' : 'false' }}) ? 'block' :
+                                'hidden'">
+                                <ul :class="sidebarToggle ? 'lg:hidden' : 'flex'"
+                                    class="flex flex-col gap-1 mt-2 menu-dropdown pl-9">
+                                    <li>
+                                        <a href="{{ route('user.index') }}"
+                                            class="menu-dropdown-item group hover:bg-gray-500 hover:bg-opacity-10"
+                                            :class="{ 'menu-dropdown-item-active': {{ request()->routeIs('user.*') ? 'true' : 'false' }} }">
+                                            User
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('pegawai.index') }}"
+                                            class="menu-dropdown-item group hover:bg-gray-500 hover:bg-opacity-10"
+                                            :class="{ 'menu-dropdown-item-active': {{ request()->routeIs('pegawai.*') ? 'true' : 'false' }} }">
+                                            Pegawai
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('obat.index') }}"
+                                            class="menu-dropdown-item group hover:bg-gray-500 hover:bg-opacity-10"
+                                            :class="{ 'menu-dropdown-item-active': {{ request()->routeIs('obat.*') ? 'true' : 'false' }} }">
+                                            Obat
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('wilayah.index') }}"
+                                            class="menu-dropdown-item group hover:bg-gray-500 hover:bg-opacity-10"
+                                            :class="{ 'menu-dropdown-item-active': {{ request()->routeIs('wilayah.*') ? 'true' : 'false' }} }">
+                                            Wilayah
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('jkunjungan.index') }}"
+                                            class="menu-dropdown-item group hover:bg-gray-500 hover:bg-opacity-10"
+                                            :class="{ 'menu-dropdown-item-active': {{ request()->routeIs('jkunjungan.*') ? 'true' : 'false' }} }">
+                                            Jenis Kunjungan
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('tindakan.index') }}"
+                                            class="menu-dropdown-item group hover:bg-gray-500 hover:bg-opacity-10"
+                                            :class="{ 'menu-dropdown-item-active': {{ request()->routeIs('tindakan.*') ? 'true' : 'false' }} }">
+                                            Tindakan
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('pasien.index') }}"
+                                            class="menu-dropdown-item group hover:bg-gray-500 hover:bg-opacity-10"
+                                            :class="{ 'menu-dropdown-item-active': {{ request()->routeIs('pasien.*') ? 'true' : 'false' }} }">
+                                            Pasien
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    @endif
                 </ul>
             </div>
 
-            <!-- Others Group -->
             <div>
                 <h3 class="mb-4 text-xs uppercase leading-[20px] text-gray-400">
                     <span class="menu-group-title" :class="sidebarToggle ? 'lg:hidden' : ''">
                         Transaksi
                     </span>
-
                     <svg :class="sidebarToggle ? 'lg:block hidden' : 'hidden'"
                         class="mx-auto fill-current menu-group-icon" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -155,91 +181,25 @@
                     </svg>
                 </h3>
                 <ul class="flex flex-col gap-4 mb-6">
-                    <!-- Menu Item Profile -->
                     <li>
-                        <a href="{{ route('user.index') }}" @click="selected = (selected === 'Profile' ? '':'Profile')"
-                            class="menu-item group"
-                            :class="(selected === 'Profile') && (page === 'profile') ? 'menu-item-active' :
-                            'menu-item-inactive'">
-                            <svg :class="(selected === 'Profile') && (page === 'profile') ? 'menu-item-icon-active' :
-                            'menu-item-icon-inactive'"
+                        <a href="{{ route('kunjungan.index') }}" class="menu-item group"
+                            :class="{ 'menu-item-active': {{ $isKunjunganActive ? 'true' : 'false' }} }">
+                            <svg :class="{
+                                'menu-item-icon-active': {{ $isKunjunganActive ? 'true' : 'false' }},
+                                'menu-item-icon-inactive':
+                                    !{{ $isKunjunganActive ? 'true' : 'false' }}
+                            }"
                                 width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd"
                                     d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 14.1526 4.3002 16.1184 5.61936 17.616C6.17279 15.3096 8.24852 13.5955 10.7246 13.5955H13.2746C15.7509 13.5955 17.8268 15.31 18.38 17.6167C19.6996 16.119 20.5 14.153 20.5 12C20.5 7.30558 16.6944 3.5 12 3.5ZM17.0246 18.8566V18.8455C17.0246 16.7744 15.3457 15.0955 13.2746 15.0955H10.7246C8.65354 15.0955 6.97461 16.7744 6.97461 18.8455V18.856C8.38223 19.8895 10.1198 20.5 12 20.5C13.8798 20.5 15.6171 19.8898 17.0246 18.8566ZM2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM11.9991 7.25C10.8847 7.25 9.98126 8.15342 9.98126 9.26784C9.98126 10.3823 10.8847 11.2857 11.9991 11.2857C13.1135 11.2857 14.0169 10.3823 14.0169 9.26784C14.0169 8.15342 13.1135 7.25 11.9991 7.25ZM8.48126 9.26784C8.48126 7.32499 10.0563 5.75 11.9991 5.75C13.9419 5.75 15.5169 7.32499 15.5169 9.26784C15.5169 11.2107 13.9419 12.7857 11.9991 12.7857C10.0563 12.7857 8.48126 11.2107 8.48126 9.26784Z"
                                     fill="" />
                             </svg>
-
                             <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
-                                Pasien
+                                Daftar Kunjungan
                             </span>
                         </a>
                     </li>
-                    <!-- Menu Item Profile -->
-
-                    <!-- Menu Item Calendar -->
-                    <li>
-                        <a href="{{ route('obat.index') }}"
-                            @click="selected = (selected === 'Calendar' ? '':'Calendar')" class="menu-item group"
-                            :class="(selected === 'Calendar') && (page === 'calendar') ? 'menu-item-active' :
-                            'menu-item-inactive'">
-                            <svg :class="(selected === 'Calendar') && (page === 'calendar') ? 'menu-item-icon-active' :
-                            'menu-item-icon-inactive'"
-                                width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8 2C8.41421 2 8.75 2.33579 8.75 2.75V3.75H15.25V2.75C15.25 2.33579 15.5858 2 16 2C16.4142 2 16.75 2.33579 16.75 2.75V3.75H18.5C19.7426 3.75 20.75 4.75736 20.75 6V9V19C20.75 20.2426 19.7426 21.25 18.5 21.25H5.5C4.25736 21.25 3.25 20.2426 3.25 19V9V6C3.25 4.75736 4.25736 3.75 5.5 3.75H7.25V2.75C7.25 2.33579 7.58579 2 8 2ZM8 5.25H5.5C5.08579 5.25 4.75 5.58579 4.75 6V8.25H19.25V6C19.25 5.58579 18.9142 5.25 18.5 5.25H16H8ZM19.25 9.75H4.75V19C4.75 19.4142 5.08579 19.75 5.5 19.75H18.5C18.9142 19.75 19.25 19.4142 19.25 19V9.75Z"
-                                    fill="" />
-                            </svg>
-
-                            <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
-                                Tindakan
-                            </span>
-                        </a>
-                    </li>
-                    <!-- Menu Item Calendar -->
-                    <!-- Menu Item Tagihan -->
-                    <li>
-                        <a href="{{ route('obat.index') }}"
-                            @click="selected = (selected === 'Calendar' ? '':'Calendar')" class="menu-item group"
-                            :class="(selected === 'Calendar') && (page === 'calendar') ? 'menu-item-active' :
-                            'menu-item-inactive'">
-                            <svg :class="(selected === 'Calendar') && (page === 'calendar') ? 'menu-item-icon-active' :
-                            'menu-item-icon-inactive'"
-                                width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8 2C8.41421 2 8.75 2.33579 8.75 2.75V3.75H15.25V2.75C15.25 2.33579 15.5858 2 16 2C16.4142 2 16.75 2.33579 16.75 2.75V3.75H18.5C19.7426 3.75 20.75 4.75736 20.75 6V9V19C20.75 20.2426 19.7426 21.25 18.5 21.25H5.5C4.25736 21.25 3.25 20.2426 3.25 19V9V6C3.25 4.75736 4.25736 3.75 5.5 3.75H7.25V2.75C7.25 2.33579 7.58579 2 8 2ZM8 5.25H5.5C5.08579 5.25 4.75 5.58579 4.75 6V8.25H19.25V6C19.25 5.58579 18.9142 5.25 18.5 5.25H16H8ZM19.25 9.75H4.75V19C4.75 19.4142 5.08579 19.75 5.5 19.75H18.5C18.9142 19.75 19.25 19.4142 19.25 19V9.75Z"
-                                    fill="" />
-                            </svg>
-
-                            <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
-                                Tagihan
-                            </span>
-                        </a>
-                    </li>
-                    <!-- Menu Item Tagihan -->
-                    <!-- Menu Item Laporan -->
-                    <li>
-                        <a href="{{ route('obat.index') }}"
-                            @click="selected = (selected === 'Calendar' ? '':'Calendar')" class="menu-item group"
-                            :class="(selected === 'Calendar') && (page === 'calendar') ? 'menu-item-active' :
-                            'menu-item-inactive'">
-                            <svg :class="(selected === 'Calendar') && (page === 'calendar') ? 'menu-item-icon-active' :
-                            'menu-item-icon-inactive'"
-                                width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8 2C8.41421 2 8.75 2.33579 8.75 2.75V3.75H15.25V2.75C15.25 2.33579 15.5858 2 16 2C16.4142 2 16.75 2.33579 16.75 2.75V3.75H18.5C19.7426 3.75 20.75 4.75736 20.75 6V9V19C20.75 20.2426 19.7426 21.25 18.5 21.25H5.5C4.25736 21.25 3.25 20.2426 3.25 19V9V6C3.25 4.75736 4.25736 3.75 5.5 3.75H7.25V2.75C7.25 2.33579 7.58579 2 8 2ZM8 5.25H5.5C5.08579 5.25 4.75 5.58579 4.75 6V8.25H19.25V6C19.25 5.58579 18.9142 5.25 18.5 5.25H16H8ZM19.25 9.75H4.75V19C4.75 19.4142 5.08579 19.75 5.5 19.75H18.5C18.9142 19.75 19.25 19.4142 19.25 19V9.75Z"
-                                    fill="" />
-                            </svg>
-
-                            <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
-                                Laporan
-                            </span>
-                        </a>
-                    </li>
-                    <!-- Menu Item Laporan -->
                 </ul>
             </div>
         </nav>

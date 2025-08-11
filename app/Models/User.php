@@ -67,8 +67,12 @@ class User extends Authenticatable
     /**
      * Check if the user has a specific role.
      */
-    public function hasRole(string $slug): bool
+    public function hasRole(string|array $slugs): bool
     {
-        return $this->roles()->where('slug', $slug)->exists();
+        if (is_string($slugs)) {
+            $slugs = [$slugs];
+        }
+
+        return $this->roles()->whereIn('slug', $slugs)->exists();
     }
 }

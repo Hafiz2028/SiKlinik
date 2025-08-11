@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\Schema;
 
 class ObatSeeder extends Seeder
 {
@@ -14,6 +15,10 @@ class ObatSeeder extends Seeder
     public function run(): void
     {
         // Kosongkan tabel sebelum diisi
+        Schema::disableForeignKeyConstraints();
+
+        // 2. Kosongkan tabel (anak dulu, baru induk)
+        DB::table('kunjungan_obat')->truncate();
         DB::table('obats')->truncate();
 
         $this->command->info('Memasukkan data awal untuk Obat...');

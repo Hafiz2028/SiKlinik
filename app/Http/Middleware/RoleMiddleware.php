@@ -19,10 +19,15 @@ class RoleMiddleware
         if (!Auth::check()) {
             return redirect('login');
         }
-        foreach ($roles as $role) {
-            if ($request->user()->hasRole($role)) {
-                return $next($request);
-            }
+
+        // Pecah string yang dipisah koma menjadi array
+        $roles = collect($roles)
+            ->flatMap(fn($role) => explode(',', $role))
+            ->map(fn($role) => trim($role))
+            ->toArray();
+
+        if ($request->user()->hasRole($roles)) {
+            return $next($request);
         }
 
         abort(403, 'UNAUTHORIZED ACTION.');

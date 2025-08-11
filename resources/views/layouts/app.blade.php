@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
     <title>Sistem Informasi Klinik</title>
@@ -59,7 +60,9 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
 
     {{-- 3. MODAL SEKARANG BERADA DI LEVEL ROOT BODY --}}
     <x-confirm-modal />
-     @stack('scripts')
+    @stack('styles')
+    @stack('scripts')
+
 </body>
 
 </html>

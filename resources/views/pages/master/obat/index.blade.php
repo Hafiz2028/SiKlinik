@@ -167,7 +167,7 @@
                                                 <button type="button" @click="openModal($event, 'warning')"
                                                     :data-title="'Pulihkan Obat'"
                                                     :data-message="`Apakah Anda yakin ingin memulihkan obat '${obat.nama_obat}'?`"
-                                                    :data-action="`/obat/${obat.id}/restore`"
+                                                    :data-action="`/master/obat/${obat.id}/restore`"
                                                     data-confirm="Ya, Pulihkan" data-method="PUT"
                                                     class="p-2 text-green-500 transition-colors duration-200 rounded-lg hover:bg-green-100 dark:hover:bg-gray-700"
                                                     title="Pulihkan">
@@ -182,7 +182,7 @@
                                                 <button type="button" @click="openModal($event, 'danger')"
                                                     :data-title="'Hapus Permanen Obat'"
                                                     :data-message="`ANDA YAKIN? Data obat '${obat.nama_obat}' akan dihapus permanen.`"
-                                                    :data-action="`/obat/${obat.id}/force-delete`"
+                                                    :data-action="`/master/obat/${obat.id}/force-delete`"
                                                     data-confirm="Ya, Hapus Permanen"
                                                     class="p-2 text-red-700 transition-colors duration-200 rounded-lg hover:bg-red-200 dark:hover:bg-gray-700"
                                                     title="Hapus Permanen">
@@ -199,7 +199,7 @@
                                         <template x-if="!obat.deleted_at">
                                             <div class="flex items-center justify-center space-x-2">
                                                 {{-- Tombol Edit --}}
-                                                <a :href="`/obat/${obat.id}/edit`"
+                                                <a :href="`/master/obat/${obat.id}/edit`"
                                                     class="p-2 text-blue-500 transition-colors duration-200 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700"
                                                     title="Edit">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor"
@@ -214,7 +214,7 @@
                                                 <button type="button" @click="openModal($event, 'warning')"
                                                     :data-title="'Arsipkan Obat'"
                                                     :data-message="`Apakah Anda yakin ingin mengarsipkan obat '${obat.nama_obat}'?`"
-                                                    :data-action="`/obat/${obat.id}`" data-confirm="Ya, Arsipkan"
+                                                    :data-action="`/master/obat/${obat.id}`" data-confirm="Ya, Arsipkan"
                                                     class="p-2 text-red-500 transition-colors duration-200 rounded-lg hover:bg-red-100 dark:hover:bg-gray-700"
                                                     title="Arsipkan">
                                                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg"
