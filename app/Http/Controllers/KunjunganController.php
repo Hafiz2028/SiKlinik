@@ -9,6 +9,7 @@ use App\Models\Kunjungan;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\JenisKunjungan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -19,9 +20,18 @@ class KunjunganController extends Controller
      */
     public function index()
     {
-        $kunjungans = Kunjungan::with('pasien', 'jenisKunjungan', 'dokter')
-            ->latest('tanggal_kunjungan')
-            ->get();
+        $query = Kunjungan::with('pasien', 'jenisKunjungan', 'dokter');
+        $user = Auth::user();
+        if ($user->hasRole('dokter')) {
+            $query->whereIn('status_kunjungan', ['Menunggu', 'Diperiksa']);
+        } elseif ($user->hasRole('admin')) {
+            $query->get();
+        } elseif ($user->hasRole('petugas-pendaftaran')) {
+            $query->whereIn('status_kunjungan', ['Menunggu', 'Selesai', 'Batal']);
+        } elseif ($user->hasRole('kasir')) {
+            $query->whereIn('status_kunjungan', ['Selesai','Menunggu Pembayaran']);
+        }
+        $kunjungans = $query->latest('tanggal_kunjungan')->get();
         return view('pages.transaksi.kunjungan.index', compact('kunjungans'));
     }
 

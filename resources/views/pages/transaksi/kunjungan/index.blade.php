@@ -121,19 +121,21 @@
                                 <td class="px-4 py-3">
                                     <div class="flex items-center justify-center space-x-2">
                                         <!-- Tombol Aksi Dinamis -->
-                                        <template
-                                            x-if="kunjungan.status_kunjungan === 'Menunggu' || kunjungan.status_kunjungan === 'Diperiksa'">
-                                            <a :href="`/transaksi/pemeriksaan/${kunjungan.id}`"
-                                                class="inline-flex items-center justify-center gap-1 px-3 py-1 text-sm font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                                    viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd"
-                                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                                Periksa
-                                            </a>
-                                        </template>
+                                        @if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('dokter'))
+                                            <template
+                                                x-if="kunjungan.status_kunjungan === 'Menunggu' || kunjungan.status_kunjungan === 'Diperiksa'">
+                                                <a :href="`/transaksi/pemeriksaan/${kunjungan.id}`"
+                                                    class="inline-flex items-center justify-center gap-1 px-3 py-1 text-sm font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                        viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Periksa
+                                                </a>
+                                            </template>
+                                        @endif
                                         <template x-if="kunjungan.status_kunjungan === 'Menunggu Pembayaran'">
                                             <a :href="`/transaksi/pembayaran/${kunjungan.id}`"
                                                 class="inline-flex items-center justify-center gap-1 px-3 py-1 text-sm font-medium text-white bg-green-600 rounded-md shadow-sm hover:bg-green-700">

@@ -20,6 +20,7 @@ class Kunjungan extends Model
         'keluhan_utama',
         'status_kunjungan',
         'total_tagihan',
+        'diagnosis',
     ];
 
     // Relasi ke master data
